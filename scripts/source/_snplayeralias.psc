@@ -466,7 +466,7 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 				SetNeedsChange(-10.0, 25.0, 0.25, 0)
 
 			ElseIf _SNQuest._SNFood_RawList.HasForm(Food)
-				If _SNQuest._SNCannibalToggle.GetValue() as Int == 1
+				If _SNQuest._SNCannibalToggle.GetValue() as Int == 1 && (_SNQuest.PlayerIsWoodelf || targ.IsEquipped(_SNQuest.DA11RingofNamira))
 					CheckRecentFood(Food)
 					If ThirstState > 0.0
 						SetNeedsChange(Utility.RandomFloat(15.0, 40.0), Utility.RandomFloat(1.0, 4.0), 0.0, 0)

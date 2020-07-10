@@ -196,6 +196,8 @@ Function AddFood(Form Food, Float Expire, Float Value)
 			_SNQuest.SatiationList[i] = Value
 			If RenameInInventory
 				RenameNewSingle(_SNQuest.FoodInventoryList[i], OriginalNameList[i], _SNQuest.SatiationList[i])
+				targ.AddItem(_SNEmptyMiscItem, 1, true)
+				targ.RemoveItem(_SNEmptyMiscItem, 1, true)
 			EndIf
 			Return
 		Else

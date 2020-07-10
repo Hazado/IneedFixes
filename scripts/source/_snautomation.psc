@@ -383,7 +383,12 @@ Event OnCheckStatus(string a_eventName, string a_strArg, float a_numArg, Form a_
 	If targ
 		Int FoodCount
 		If _SNQuest._SNCannibalToggle.GetValue() as Int == 1
-			FoodCount = targ.GetItemCount(_SNQuest._SNFood_HeavyList) as Int +  targ.GetItemCount(_SNQuest._SNFood_MedList) as Int +  targ.GetItemCount(_SNQuest._SNFood_SoupList) as Int +  targ.GetItemCount(_SNQuest._SNFood_RawList) as Int
+			Race targRace = targ.GetRace()
+			If targRace == _SNQuest.WoodelfRace || targRace == _SNQuest.WoodelfRaceVampire || targ.IsEquipped(_SNQuest.DA11RingofNamira)
+				FoodCount = targ.GetItemCount(_SNQuest._SNFood_HeavyList) as Int +  targ.GetItemCount(_SNQuest._SNFood_MedList) as Int +  targ.GetItemCount(_SNQuest._SNFood_SoupList) as Int +  targ.GetItemCount(_SNQuest._SNFood_LightList) as Int +  targ.GetItemCount(_SNQuest._SNFood_RawList) as Int
+			Else
+				FoodCount = targ.GetItemCount(_SNQuest._SNFood_HeavyList) as Int +  targ.GetItemCount(_SNQuest._SNFood_MedList) as Int +  targ.GetItemCount(_SNQuest._SNFood_SoupList) as Int +  targ.GetItemCount(_SNQuest._SNFood_LightList) as Int
+			EndIf
 		Else
 			FoodCount = targ.GetItemCount(_SNQuest._SNFood_HeavyList) as Int +  targ.GetItemCount(_SNQuest._SNFood_MedList) as Int +  targ.GetItemCount(_SNQuest._SNFood_SoupList) as Int +  targ.GetItemCount(_SNQuest._SNFood_LightList) as Int
 		EndIf

@@ -419,6 +419,12 @@ Function ApplySettings()
 	_SNQuest._SNVampWereToggle.SetValue(Vampire)
 	If Cannibalism
 		_SNQuest._SNCannibalToggle.SetValue(1)
+		Race targRace = _SNQuest.PlayerRef.GetRace()
+		If targRace == _SNQuest.WoodelfRace || targRace == _SNQuest.WoodelfRaceVampire
+			_SNQuest.PlayerIsWoodelf = True
+		Else
+			_SNQuest.PlayerIsWoodelf = False
+		EndIf
 	Else
 		_SNQuest._SNCannibalToggle.SetValue(0)
 	EndIf

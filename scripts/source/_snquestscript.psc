@@ -105,10 +105,14 @@ ConstructibleObject Property RecipeFoodRabbitCooked Auto
 ConstructibleObject Property RecipeFoodSalmonCooked Auto
 ConstructibleObject Property RecipeFoodVenisonCooked Auto
 
+Armor Property DA11RingofNamira Auto
+
 MiscObject Property _SNWaterskin_0 Auto
 MiscObject Property _SNWaterskin_Salt Auto
 MiscObject Property LeatherStrips Auto
 MiscObject Property Gold001 Auto
+
+Perk Property DA11Cannibalism Auto
 
 Activator Property DFSFountain Auto
 Activator Property _SNWaterBarrel Auto
@@ -214,6 +218,9 @@ Worldspace Property Solstheim Auto
 Location Property RiftenRaggedFlagonLocation Auto
 Location Property HighHrothgarLocation Auto
 Location Property DLC1HunterHQLocationInterior Auto
+
+Race Property WoodelfRace Auto
+Race Property WoodelfRaceVampire Auto
 
 Quest Property _SNApplyFoodQuest_1 Auto
 Quest Property _SNApplyFoodQuest_2 Auto
@@ -328,6 +335,7 @@ Bool Property IsSitting Auto
 Bool Property IsBedRoll Auto
 Bool Property IsWerewolf Auto
 Bool Property IsWerewolfHuman Auto
+Bool Property PlayerIsWoodelf Auto
 Bool Property Death Auto
 Bool Property SetLeveledLists Auto
 Bool Property SetPotionLists Auto
@@ -1263,11 +1271,14 @@ EndFunction
 
 Bool Function AutoEat(Actor Target, Bool Text = True, Bool Remove = False)
 	If _SNCannibalToggle.GetValue() as Int == 1
-		If FoodPriority == 0 && AutoConsume(Target, _SNFood_RawList, _SNFood_HeavyList, _SNFood_MedList, _SNFood_SoupList, _SNFood_LightList, Remove, Text)
-			Return True
-		ElseIf AutoConsume(Target, _SNFood_RawList, _SNFood_LightList, _SNFood_SoupList, _SNFood_MedList, _SNFood_HeavyList, Remove, Text)
-			Return True
-		EndIf
+		Race targRace = Target.GetRace()
+		If targRace == WoodelfRace || targRace == WoodelfRaceVampire || Target.IsEquipped(DA11RingofNamira) || Target.HasPerk(DA11Cannibalism)
+			If FoodPriority == 0 && AutoConsume(Target, _SNFood_RawList, _SNFood_HeavyList, _SNFood_MedList, _SNFood_SoupList, _SNFood_LightList, Remove, Text)
+				Return True
+			ElseIf AutoConsume(Target, _SNFood_RawList, _SNFood_LightList, _SNFood_SoupList, _SNFood_MedList, _SNFood_HeavyList, Remove, Text)
+				Return True
+			EndIf
+		EndIf	
 	Else
 		If FoodPriority == 0 && AutoConsume(Target, _SNFood_HeavyList, _SNFood_MedList, _SNFood_SoupList, _SNFood_LightList, None, Remove, Text)
 			Return True
@@ -1508,8 +1519,8 @@ EndFunction
 
 Function CheckInventory()
 	Int FoodCount
-	If _SNCannibalToggle.GetValue() as Int == 1
-		FoodCount = targ.GetItemCount(_SNFood_HeavyList) as Int +  targ.GetItemCount(_SNFood_MedList) as Int +  targ.GetItemCount(_SNFood_SoupList) as Int +  targ.GetItemCount(_SNFood_RawList) as Int
+	If _SNCannibalToggle.GetValue() as Int == 1 && PlayerIsWoodElf
+		FoodCount = targ.GetItemCount(_SNFood_HeavyList) as Int +  targ.GetItemCount(_SNFood_MedList) as Int +  targ.GetItemCount(_SNFood_SoupList) as Int +  targ.GetItemCount(_SNFood_LightList) as Int +  targ.GetItemCount(_SNFood_RawList) as Int
 	Else
 		FoodCount = targ.GetItemCount(_SNFood_HeavyList) as Int +  targ.GetItemCount(_SNFood_MedList) as Int +  targ.GetItemCount(_SNFood_SoupList) as Int +  targ.GetItemCount(_SNFood_LightList) as Int
 	EndIf
@@ -1962,6 +1973,12 @@ Function Maintenance()
 		EnableMod()
 	EndIf
 	fModVersion = 1.89									;CHANGE VERSION NUMBER WHEN UPDATING
+	Race targRace = targ.GetRace()
+	If targRace == WoodelfRace || targRace == WoodelfRaceVampire
+		PlayerIsWoodelf = True
+	Else
+		PlayerIsWoodelf = False
+	EndIf
 	ModUpdated = False
 	Debug.Trace("")
 	Debug.Trace("=====iNeed (_sn) is finished refreshing itself and searching for addons!=====")
